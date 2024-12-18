@@ -1,0 +1,22 @@
+#Variables para Grafana
+grafana_admin_password: "admin"
+grafana_version: "9.6.3"
+grafana_http_port: 3000
+
+
+
+# Variables para InfluxDB
+influxdb_version: "1.11.8-1"
+influxdb_bind_address: "0.0.0.0:8086"
+influxdb_database: "monitoring"
+
+
+#Variables para Telegraf
+telegraf_version: "1.23.3-1"
+telegraf_influxdb_url: "http://localhost:8086"
+telegraf_database: "monitoring"
+telegraf_plugins:
+  - name: cpu
+    config:
+      percpu: true
+

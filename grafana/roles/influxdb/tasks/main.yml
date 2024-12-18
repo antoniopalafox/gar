@@ -1,0 +1,16 @@
+- name: Add InfluxDB GPG key
+  apt_key:
+    url: https://repos.influxdata.com/influxdb.key
+    state: present
+
+- name: Add InfluxDB repository
+  apt_repository:
+    repo: "deb https://repos.influxdata.com/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Install InfluxDB
+  apt:
+    name: influxdb=1.11.8-1
+    state: present
+    update_cache: yes
+

@@ -1,0 +1,50 @@
+---
+- name: Add Telegraf GPG key
+  apt_key:
+    url: https://repos.influxdata.com/influxdb.key
+    state: present
+
+- name: Add Telegraf repository
+  apt_repository:
+    repo: "deb https://repos.influxdata.com/ubuntu {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Install Telegraf
+  apt:
+    name: telegraf={{ telegraf_version }}
+    state: present
+    update_cache: yes
+
+- name: Configure Telegraf output to InfluxDB
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    regexp: '^  urls = .*'
+    line: '  urls = ["http://localhosts:8086"]'
+    state: present
+
+- name: Configure Telegraf database
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    regexp: '^  database = .*'
+    line: '  database = "monitoring"'
+    state: present
+
+- name: Enable CPU input plugin
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    insertafter: '[[inputs]]'
+    line: '[[inputs.cpu]]'
+    state: present
+
+- name: Configure CPU input settings
+  lineinfile:
+    path: /etc/telegraf/telegraf.conf
+    insertafter: '[[inputs.cpu]]'
+    line: '  percpu = true'
+    state: present
+
+- name: Ensure Telegraf is started and enabled
+  systemd:
+    name: telegraf
+    state: started
+    enabled: yes
